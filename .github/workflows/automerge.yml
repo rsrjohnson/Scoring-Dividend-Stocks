@@ -1,0 +1,15 @@
+name: automerge
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/sync
+        with:
+          source-branch: feature/test_auto_merge
+          destination-branch: dev

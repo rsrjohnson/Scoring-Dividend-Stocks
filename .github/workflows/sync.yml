@@ -6,7 +6,7 @@ on:
     - "feature/*"  # Support wildcard matching
 
 jobs:
-  auto_merge:
+  create_prs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -42,22 +42,4 @@ jobs:
         pr_allow_empty: true                              # Creates pull request even if there are no changes
         github_token: ${{ secrets.MY_GH_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
         
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Git
-      run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
-    - name: Get Pull Requests
-      run: |
-        PULL_REQUESTS=$(curl -X GET \
-          -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
-    - name: Merge Pull Request
-      run: |
-        PULL_REQUEST_NUMBER=$(echo $PULL_REQUESTS | jq --arg TITLE "Automatic pull request" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
-        if [ $PULL_REQUEST_NUMBER -ne -1 ]; then
-          curl -X PUT \
-            -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"commit_title\": \"Automatic merge\"}"
+   

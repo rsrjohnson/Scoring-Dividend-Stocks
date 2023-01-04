@@ -37,7 +37,7 @@ jobs:
           "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
     - name: Merge Pull Request
       run: |
-        PULL_REQUEST_NUMBER=$(echo "$PULL_REQUESTS" | jq --arg TITLE "Pulling ${{ github.ref }} into int-test" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
+        PULL_REQUEST_NUMBER=$(echo "$PULL_REQUESTS" | jq --arg TITLE "Automatic pull request" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
         if [ "$PULL_REQUEST_NUMBER" -ne -1 ]; then
           curl -X PUT \
             -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \

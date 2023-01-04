@@ -25,21 +25,25 @@ jobs:
         pr_draft: false                                    # Creates pull request as draft
         pr_allow_empty: true                              # Creates pull request even if there are no changes
         github_token: ${{ secrets.MY_GH_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
-        
-    - name: pull-request-dev
-      uses: repo-sync/pull-request@v2
-      with:
-        source_branch: ""                                 # If blank, default: triggered branch
-        destination_branch: "int-dev"                      # If blank, default: master
-        pr_title: "Pulling ${{ github.ref }} into int-dev" # Title of pull request
-        pr_body: |                                        # Full markdown support, requires pr_title to be set
-          :crown: *An automated PR*
-
-          _Created by [repo-sync/pull-request](https://github.com/repo-sync/pull-request)_
-        pr_template: ".github/PULL_REQUEST_TEMPLATE.md"   # Path to pull request template, requires pr_title to be set, excludes pr_body
-        pr_label: "auto-pr"                               # Comma-separated list (no spaces)
-        pr_draft: false                                    # Creates pull request as draft
-        pr_allow_empty: true                              # Creates pull request even if there are no changes
-        github_token: ${{ secrets.MY_GH_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
+               
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up Git
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+    - name: Get Pull Requests
+      run: |
+        PULL_REQUESTS=$(curl -X GET \
+          -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
+    - name: Merge Pull Request
+      run: |
+        PULL_REQUEST_NUMBER=$(echo $PULL_REQUESTS | jq --arg TITLE "Automatic pull request" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
+        if [ $PULL_REQUEST_NUMBER -ne -1 ]; then
+          curl -X PUT \
+            -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"commit_title\": \"Automatic merge\"}"
         
    

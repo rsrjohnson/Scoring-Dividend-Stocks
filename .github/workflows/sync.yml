@@ -67,4 +67,4 @@ jobs:
             curl -X PUT \
               -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
               -H "Content-Type: application/json" \
-              -d "{\"commit_title\": \"Automatic merge
+              -d "{\"commit_title\": \"Automatic merge\"}"

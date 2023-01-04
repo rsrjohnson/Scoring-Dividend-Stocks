@@ -1,4 +1,4 @@
-# File: .github/workflows/sync.yml
+# File: .github/workflows/sync.yml #
 
 on:
   push:

@@ -35,5 +35,8 @@ jobs:
         PULL_REQUESTS=$(curl -X GET \
           -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
+          
+    - name: Print          
+      run: echo "Hello $PULL_REQUESTS"
         
    

@@ -15,7 +15,7 @@ jobs:
       with:
         source_branch: ""                                 # If blank, default: triggered branch
         destination_branch: "int-test"                      # If blank, default: master
-        pr_title: "Pulling ${{ github.ref }} into int-test" # Title of pull request
+        pr_title: "Automatic pull request" # Title of pull request
         pr_body: |                                        # Full markdown support, requires pr_title to be set
           :crown: *An automated PR*
 

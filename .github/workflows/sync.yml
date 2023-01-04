@@ -30,22 +30,13 @@ jobs:
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-    - name: Get Pull Requests
-      run: |
-        PULL_REQUESTS=$(curl -X GET \
-          -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
     - name: Merge Pull Request
       run: |
-        PULL_REQUEST_NUMBER=$(echo "$PULL_REQUESTS" | jq --arg TITLE "Automatic pull request" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
-        if [ "$PULL_REQUEST_NUMBER" -ne -1 ]; then
-          curl -X PUT \
-            -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"commit_title\": \"Automatic merge\", \"commit_message\": \"This pull request was automatically merged by a GitHub Action.\", \"sha\": \"${{ github.event.pull_request.head.sha }}\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PULL_REQUEST_NUMBER/merge"
-        else
-          echo "Pull request with title 'Automatic pull request' not found"
+        curl -X PUT \
+          -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "{\"commit_title\": \"Automatic merge\", \"commit_message\": \"This pull request was automatically merged by a GitHub Action.\", \"sha\": \"${{ github.event.pull_request.head.sha }}\"}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/$PULL_REQUEST_NUMBER/merge"
         fi
         
    

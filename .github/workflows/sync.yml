@@ -26,8 +26,6 @@ jobs:
         pr_allow_empty: true                              # Creates pull request even if there are no changes
         github_token: ${{ secrets.MY_GH_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
                
-    - name: Checkout
-      uses: actions/checkout@v2
     - name: Set up Git
       run: |
         git config --global user.email "action@github.com"

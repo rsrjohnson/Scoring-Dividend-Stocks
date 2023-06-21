@@ -15,7 +15,7 @@ jobs:
       with:
         source_branch: ""                                 # If blank, default: triggered branch
         destination_branch: "int-test"                      # If blank, default: master
-        pr_title: "Pulling ${{ github.ref }} into int-test" # Title of pull request
+        pr_title: "Automatic pull request" # Title of pull request
         pr_body: |                                        # Full markdown support, requires pr_title to be set
           :crown: *An automated PR*
 
@@ -26,26 +26,11 @@ jobs:
         pr_allow_empty: true                              # Creates pull request even if there are no changes
         github_token: ${{ secrets.MY_GH_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
                
-    - name: Set up Git
-      run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
     - name: Get Pull Requests
       run: |
-        PULL_REQUESTS=$(curl -X GET \
-          -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
-    - name: Merge Pull Request
-      run: |
-        PULL_REQUEST_NUMBER=$(echo "$PULL_REQUESTS" | jq --arg TITLE "Pulling ${{ github.ref }} into int-test" --argjson NUMBER -1 '. | map(select(.title == $TITLE)) | .[0].number')
-        if [ "$PULL_REQUEST_NUMBER" -ne -1 ]; then
-          curl -X PUT \
-            -H "Authorization: Bearer ${{ secrets.MY_GH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"commit_title\": \"Automatic merge\", \"commit_message\": \"This pull request was automatically merged by a GitHub Action.\", \"sha\": \"${{ github.event.pull_request.head.sha }}\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PULL_REQUEST_NUMBER/merge"
-        else
-          echo "Pull request with title 'Automatic pull request' not found"
-        fi
+        PULL_REQUESTS="Automatic pull request"
+          
+    - name: Print          
+      run: echo "Hello $PULL_REQUESTS"
         
    
